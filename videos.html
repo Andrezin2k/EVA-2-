@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>E.V.A Ciano Vídeos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <style>
+    :root {
+      --cyan: #0abdc6;
+      --dark: #001f2f;
+      --light: #e2f7fa;
+      --card-light: #ffffff;
+      --card-dark: #0d1d2b;
+      --text-light: #001f2f;
+      --text-dark: #e2f7fa;
+    }
+    * { box-sizing:border-box; margin:0; padding:0;}
+    body {
+      font-family:'Poppins',sans-serif;
+      display:flex;
+      height:100vh;
+      overflow:hidden;
+      transition: background .5s, color .5s;
+    }
+    body.light { background:var(--light); color:var(--text-light); }
+    body.dark { background:var(--dark); color:var(--text-dark); }
+    #particles-js { position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1; }
+
+    nav.sidebar {
+      width:260px;
+      flex-shrink:0;
+      background:var(--card-light);
+      overflow-y:auto;
+      transition: width .3s, background .5s;
+    }
+    body.dark nav.sidebar { background:var(--card-dark); }
+    nav.sidebar a {
+      display:flex;
+      align-items:center;
+      padding:.75rem 1.5rem;
+      color:inherit;
+      text-decoration:none;
+      transition: background .2s;
+    }
+    nav.sidebar a:hover { background:rgba(0,0,0,0.05); }
+
+    header {
+      position:fixed;
+      top:0; left:260px; right:0;
+      height:56px;
+      display:flex;
+      align-items:center;
+      padding:0 1rem;
+      background:rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      z-index:10;
+      transition: background .5s;
+    }
+    body.dark header {
+      background:rgba(0,0,0,0.8);
+    }
+    .search { flex:1; margin:0 1rem; }
+    header .btns i { cursor:pointer; font-size:1.5rem; margin-left:.75rem; transition: color .3s;}
+    header .btns i:hover { color:var(--cyan); }
+
+    main#content {
+      margin-top:56px;
+      margin-left:260px;
+      padding:1rem;
+      flex-grow:1;
+      overflow-y:auto;
+      position:relative;
+    }
+
+    .video-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:1rem;
+      opacity:0;
+      animation: fadeInGrid .6s forwards .2s;
+    }
+    @keyframes fadeInGrid { to { opacity:1; } }
+
+    .video-card {
+      position:relative;
+      border-radius:8px;
+      overflow:hidden;
+      background:var(--card-light);
+      box-shadow:0 4px 12px rgba(0,0,0,0.1);
+      transition:transform .3s, background .5s;
+      cursor:pointer;
+    }
+    body.dark .video-card { background:var(--card-dark); }
+    .video-card:hover { transform:translateY(-5px); }
+    .thumb { display:block; width:100%; height:160px; object-fit:cover; }
+    .video-info { padding:.5rem; }
+    .video-info h5 { margin:0 0 .25rem; font-size:1.05rem; }
+    .video-info .meta { font-size:.85rem; color:gray; }
+
+    .overlay {
+      position:absolute;
+      top:0;left:0;width:100%;height:100%;
+      display:flex;justify-content:center;align-items:center;
+      color:#fff;
+      background:rgba(0,0,0,0.4);
+      opacity:0;
+      transition:opacity .3s;
+      font-size:1.6rem;
+    }
+    .video-card:hover .overlay { opacity:1; }
+
+    .modal-lightbox {
+      position:fixed;
+      top:0;left:0;width:100%;height:100%;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.8);
+      opacity:0;visibility:hidden;
+      transition:visibility 0s .3s,opacity .3s;
+    }
+    .modal-lightbox.open {
+      opacity:1;
+      visibility:visible;
+      transition:opacity .3s;
+    }
+    .modal-content {
+      position:relative;
+      background:inherit;
+      padding:1rem 1.25rem;
+      border-radius:8px;
+      width:90%;
+      max-width:900px;
+      color:#fff;
+      animation: modalFade .3s ease-in-out;
+    }
+    @keyframes modalFade { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
+    .modal-content .close {
+      position:absolute; top:.5rem; right:.5rem;
+      font-size:1.5rem; cursor:pointer; color:#fff;
+    }
+    video.modal-video,
+    iframe.modal-video {
+      width:100%;
+      max-height:70vh;
+      border-radius:8px;
+      background:#000;
+      display:block;
+      margin-bottom:8px;
+    }
+    .progress-bar-container {
+      height:5px;
+      background:rgba(255,255,255,0.2);
+      border-radius:3px;
+      margin-bottom:.75rem;
+      overflow:hidden;
+    }
+    .progress-bar-inner {
+      height:5px;
+      width:0%;
+      background:var(--cyan);
+      transition:width .1s linear;
+    }
+
+    .modal-info h4 { margin:.5rem 0; }
+    .modal-meta { font-size:.9rem; margin-bottom:.75rem; color:#ccc; }
+
+    .modal-actions .btn {
+      margin-right:.5rem;
+      border-radius:20px;
+      transition: background .3s, color .3s;
+    }
+    .modal-actions .btn-outline-warning:hover {
+      background:var(--cyan);color:#fff;
+    }
+
+    .reactions span {
+      font-size:1.2rem;
+      margin-right:1rem;
+      cursor:pointer;
+      transition: transform .2s;
+    }
+    .reactions span:hover { transform:scale(1.3); }
+
+    .comments {
+      background:rgba(255,255,255,0.1);
+      border-radius:8px;
+      max-height:150px;
+      overflow-y:auto;
+      padding:.5rem;
+      margin-top:1rem;
+    }
+    .comment-input {
+      display:flex;
+      margin-top:.5rem;
+    }
+    .toast {
+      position:fixed;
+      bottom:1rem;
+      right:1rem;
+      min-width:200px;
+      z-index:2000;
+      opacity:0;
+      transform:translateY(20px);
+      transition:opacity .3s,transform .3s;
+    }
+    .toast.show {
+      opacity:1;
+      transform:translateY(0);
+    }
+  </style>
+</head>
+<body class="light">
+  <div id="particles-js"></div>
+
+  <nav class="sidebar">
+    <a href="#" data-filter="all"><i class="bi bi-house-door-fill me-2"></i>Início</a>
+    <a href="#" id="nav-fav"><i class="bi bi-star-fill me-2"></i>Favoritos</a>
+    <hr>
+    <a href="#" data-filter="Web Design"><i class="bi bi-palette me-2"></i>Web Design</a>
+    <a href="#" data-filter="Logística"><i class="bi bi-truck me-2"></i>Logística</a>
+    <a href="#" data-filter="Administração"><i class="bi bi-briefcase me-2"></i>Administração</a>
+  </nav>
+
+  <header>
+    <div><i class="bi bi-camera-reels-fill"></i><strong class="ms-1">E.V.A Vídeos</strong></div>
+    <input id="searchInput" type="search" class="form-control search" placeholder="Pesquisar vídeos…">
+    <div class="btns ms-auto">
+      <i id="shareBtn" class="bi bi-share-fill" title="Compartilhar vídeo"></i>
+      <i id="darkToggle" class="bi bi-moon-fill" title="Modo escuro/claro"></i>
+    </div>
+  </header>
+
+  <main id="content">
+    <div class="video-grid" id="videoGrid"></div>
+  </main>
+
+  <div class="modal-lightbox" id="lightbox">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <video class="modal-video" controls></video>
+      <iframe class="modal-video" frameborder="0" allowfullscreen style="display:none;"></iframe>
+      <div class="progress-bar-container"><div class="progress-bar-inner" id="videoProgress"></div></div>
+      <div class="modal-info">
+        <h4 id="modalTitle"></h4>
+        <p class="modal-meta" id="modalMeta"></p>
+        <div class="modal-actions">
+          <button id="btnFavModal" class="btn btn-outline-warning btn-sm">Favoritar</button>
+          <button id="btnCertModal" class="btn btn-outline-light btn-sm">Gerar Certificado</button>
+        </div>
+        <div class="reactions">
+          <span id="likeBtn">👍 <span id="likeCnt">0</span></span>
+          <span id="heartBtn">❤️ <span id="heartCnt">0</span></span>
+          <span id="lolBtn">😂 <span id="lolCnt">0</span></span>
+          <span id="wowBtn">😮 <span id="wowCnt">0</span></span>
+        </div>
+        <div class="comments" id="modalComments"></div>
+        <div class="comment-input">
+          <input type="text" id="commentText" class="form-control form-control-sm" placeholder="Adicione um comentário">
+          <button id="btnComment" class="btn btn-sm btn-primary">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast alert alert-info" role="alert"></div>
+
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number:{value:100},color:{value:'#0abdc6'},shape:{type:'circle'},
+        opacity:{value:0.3},size:{value:3},
+        line_linked:{enable:true,distance:150,color:'#0abdc6',opacity:0.2,width:1},
+        move:{enable:true,speed:1}
+      },
+      interactivity:{detect_on:'canvas',events:{onhover:{enable:true,mode:'bubble'},onclick:{enable:true,mode:'push'}},modes:{bubble:{distance:200,size:5},push:{particles_nb:4}}}
+    });
+
+    const videos=[
+      {title:"HTML & CSS",area:"Web Design",src:"https://www.youtube.com/embed/dD2EISBDjWM",thumb:"https://img.youtube.com/vi/dD2EISBDjWM/mqdefault.jpg"},
+      {title:"JS Iniciantes",area:"Web Design",src:"https://www.youtube.com/embed/hdI2bqOjy3c",thumb:"https://img.youtube.com/vi/hdI2bqOjy3c/mqdefault.jpg"},
+      {title:"UX Design",area:"Web Design",src:"https://www.youtube.com/embed/9B_IbvfN1Qc",thumb:"https://img.youtube.com/vi/9B_IbvfN1Qc/mqdefault.jpg"},
+      {title:"Logística Reversa",area:"Logística",src:"https://www.youtube.com/embed/Sg3MMzjQeXg",thumb:"https://img.youtube.com/vi/Sg3MMzjQeXg/mqdefault.jpg"},
+      {title:"Transporte Smart",area:"Logística",src:"https://www.youtube.com/embed/G8X2BYr8qmk",thumb:"https://img.youtube.com/vi/G8X2BYr8qmk/mqdefault.jpg"},
+      {title:"Administração Estratégica",area:"Administração",src:"https://www.youtube.com/embed/9TqzFhDbxYo",thumb:"https://img.youtube.com/vi/9TqzFhDbxYo/mqdefault.jpg"},
+      {title:"Finanças Corporativas",area:"Administração",src:"https://www.youtube.com/embed/ZZbW5ObiXv8",thumb:"https://img.youtube.com/vi/ZZbW5ObiXv8/mqdefault.jpg"}
+    ];
+
+    let filter="all",searchTerm="",favs=JSON.parse(localStorage.getItem('evaFavs')||"[]"),views=JSON.parse(localStorage.getItem('evaViews')||"{}"),reaks=JSON.parse(localStorage.getItem('evaReacts')||"{}"),coms=JSON.parse(localStorage.getItem('evaComments')||"{}");
+    const videoGrid=document.getElementById("videoGrid"),searchInput=document.getElementById("searchInput"),navLinks=document.querySelectorAll("nav.sidebar a[data-filter]"),navFav=document.getElementById("nav-fav"),darkToggle=document.getElementById("darkToggle"),shareBtn=document.getElementById("shareBtn"),
+          lightbox=document.getElementById("lightbox"),modalVideo=lightbox.querySelector("video.modal-video"),modalIframe=lightbox.querySelector("iframe.modal-video"),modalTitle=document.getElementById("modalTitle"),modalMeta=document.getElementById("modalMeta"),btnFavModal=document.getElementById("btnFavModal"),btnCertModal=document.getElementById("btnCertModal"),closeModal=document.querySelector(".close"),progressBar=document.getElementById("videoProgress"),
+          likeBtn=document.getElementById("likeBtn"),heartBtn=document.getElementById("heartBtn"),lolBtn=document.getElementById("lolBtn"),wowBtn=document.getElementById("wowBtn"),likeCnt=document.getElementById("likeCnt"),heartCnt=document.getElementById("heartCnt"),lolCnt=document.getElementById("lolCnt"),wowCnt=document.getElementById("wowCnt"),
+          modalComments=document.getElementById("modalComments"),commentText=document.getElementById("commentText"),btnComment=document.getElementById("btnComment"),
+          toast=document.getElementById("toast");
+
+    function showToast(msg){
+      toast.textContent=msg;toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"),3000);
+    }
+
+    function saveAll(){
+      localStorage.setItem("evaFavs",JSON.stringify(favs));
+      localStorage.setItem("evaViews",JSON.stringify(views));
+      localStorage.setItem("evaReacts",JSON.stringify(reaks));
+      localStorage.setItem("evaComments",JSON.stringify(coms));
+    }
+
+    function renderGrid(){
+      videoGrid.innerHTML='';
+      const list=videos.filter(v=>(filter==="all"||(filter==="fav"?favs.includes(v.src):v.area===filter))&&v.title.toLowerCase().includes(searchTerm.toLowerCase()));
+      if(!list.length){videoGrid.innerHTML="<p>Nenhum vídeo encontrado.</p>";return;}
+      list.forEach(v=>{
+        const card=document.createElement("div");
+        card.className="video-card";
+        card.innerHTML=`<img class="thumb" src="${v.thumb}" alt="${v.title}"><div class="overlay"><i class="bi bi-play-circle-fill"></i></div><div class="video-info"><h5>${v.title}</h5><p class="meta">${v.area} · ${views[v.src]||0} views</p></div>`;
+        card.onclick=()=>openModal(v);
+        videoGrid.appendChild(card);
+      });
+    }
+
+    function openModal(v){
+      if(v.src.includes("youtube.com/embed")){
+        modalIframe.src=v.src+"?autoplay=1";
+        modalIframe.style.display="block";
+        modalVideo.style.display="none";
+      } else {
+        modalVideo.src=v.src; modalVideo.style.display="block";modalIframe.style.display="none";
+      }
+      modalTitle.textContent=v.title;
+      modalMeta.textContent=`${v.area} · ${views[v.src]||0} views`;
+      btnFavModal.textContent=favs.includes(v.src)?"Favorito":"Favoritar";
+      resetReacts(v.src); loadComments(v.src);
+
+      lightbox.classList.add("open");
+      views[v.src]=(views[v.src]||0)+1;
+      saveAll();
+      renderGrid();
+
+      if(modalVideo.style.display==="block"){
+        modalVideo.play();
+        modalVideo.ontimeupdate=()=>progressBar.style.width=(modalVideo.currentTime/modalVideo.duration*100)+"%";
+      }
+    }
+
+    function resetReacts(src){
+      const r=reaks[src]||{};
+      likeCnt.textContent=r["👍"]||0;
+      heartCnt.textContent=r["❤️"]||0;
+      lolCnt.textContent=r["😂"]||0;
+      wowCnt.textContent=r["😮"]||0;
+    }
+
+    function loadComments(src){
+      modalComments.innerHTML='';
+      (coms[src]||[]).forEach(c=>{const p=document.createElement("p");p.textContent=c;modalComments.appendChild(p);});
+    }
+
+    btnFavModal.onclick=()=>{
+      const src=modalIframe.src||modalVideo.src;
+      favs=favs.includes(src)?favs.filter(x=>x!==src):[...favs,src];
+      saveAll();
+      btnFavModal.textContent=favs.includes(src)?"Favorito":"Favoritar";
+      showToast(favs.includes(src)?"Adicionado aos favoritos":"Removido dos favoritos");
+    };
+
+    [ ["👍",likeBtn],["❤️",heartBtn],["😂",lolBtn],["😮",wowBtn] ].forEach(([emoji,btn])=>{
+      btn.onclick=()=>{
+        const src=modalIframe.src||modalVideo.src;
+        reaks[src]=reaks[src]||{};
+        reaks[src][emoji]=(reaks[src][emoji]||0)+1;
+        saveAll();
+        resetReacts(src);
+        showToast(`Você reagiu com ${emoji}`);
+      };
+    });
+
+    btnCertModal.onclick=()=>{
+      if(!confirm(`Gerar certificado para "${modalTitle.textContent}"?`))return;
+      const nome=prompt("Digite seu nome:");
+      if(!nome||nome.length<3){ alert("Nome inválido"); return; }
+      const {jsPDF}=window.jspdf;
+      const doc=new jsPDF({orientation:"landscape",unit:"pt",format:[842,595]});
+      doc.setFillColor("#0abdc6");
+      doc.rect(0,0,842,595,"F");
+      doc.setTextColor("#fff").setFontSize(30).text("Certificado de Conclusão",421,130,{align:"center"});
+      doc.setFontSize(24).text(nome,421,200,{align:"center"});
+      doc.setFontSize(18).text(`Concluiu o vídeo "${modalTitle.textContent}"`,421,260,{align:"center"});
+      doc.save(`certificado_${nome}_${modalTitle.textContent}.pdf`);
+      showToast("Certificado gerado!");
+    };
+
+    btnComment.onclick=()=>{
+      const txt=commentText.value.trim();
+      if(!txt)return;
+      const src=modalIframe.src||modalVideo.src;
+      coms[src]=[...(coms[src]||[]),txt];
+      saveAll();
+      loadComments(src);
+      commentText.value="";
+      showToast("Comentário adicionado!");
+    };
+
+    shareBtn.onclick=()=>{
+      const url=modalIframe.src||modalVideo.src;
+      if(navigator.clipboard){navigator.clipboard.writeText(url).then(()=>showToast("Link copiado!")); }
+      else showToast("Copie manualmente o link.");
+    };
+
+    closeModal.onclick=()=>{
+      lightbox.classList.remove("open");
+      if(modalVideo.style.display==="block")modalVideo.pause();
+      modalIframe.src="";
+      progressBar.style.width="0%";
+    };
+
+    searchInput.oninput=e=>{searchTerm=e.target.value;renderGrid();};
+    navLinks.forEach(a=>a.addEventListener("click",()=>{filter=a.dataset.filter;renderGrid();}));
+    navFav.onclick=()=>{filter="fav";renderGrid();};
+    darkToggle.onclick=()=>{
+      document.body.classList.toggle("dark");
+      document.body.classList.toggle("light");
+    };
+
+    renderGrid();
+  </script>
+</body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatórios - E.V.A</title>
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Animações -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <!-- Calendário -->
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+  <!-- Custom CSS inserido por JS abaixo -->
+  <style id="dynamic-style">
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #7490ff;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <!-- Header -->
+  <header class="bg-primary text-white fixed-top py-3 shadow-lg px-4 d-flex justify-content-between align-items-center">
+    <h1 class="h5 mb-0 d-flex align-items-center gap-2"><i class="bi bi-journal-richtext"></i> Relatórios</h1>
+    <nav>
+      <a href="home.html" class="text-white text-decoration-none me-3"><i class="bi bi-house-door"></i> Home</a>
+      <a href="cronograma.html" class="text-white text-decoration-none me-3"><i class="bi bi-calendar"></i> Cronograma</a>
+      <a href="perfil.html" class="text-white text-decoration-none"><i class="bi bi-person"></i> Perfil</a>
+    </nav>
+  </header>
+
+  <main class="container mt-5 pt-5">
+    <section class="text-center mb-4" data-aos="fade-down">
+      <h2 class="fw-bold">Gerencie e Acesse Seus Relatórios</h2>
+      <p class="text-muted">Crie, filtre, edite, exporte e acompanhe facilmente os relatórios do sistema.</p>
+    </section>
+
+    <!-- Filtros -->
+    <div class="row g-3 justify-content-center mb-4" data-aos="fade-up">
+      <div class="col-md-3">
+        <input type="text" class="form-control" placeholder="Pesquisar por nome..." id="search">
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control" placeholder="Filtrar por data..." id="dateFilter">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" id="typeFilter">
+          <option value="">Todos os Tipos</option>
+          <option value="Financeiro">Financeiro</option>
+          <option value="Acadêmico">Acadêmico</option>
+          <option value="Frequência">Frequência</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select class="form-select" id="areaFilter">
+          <option value="">Todas as Áreas</option>
+          <option value="Web Design">Web Design</option>
+          <option value="Logística">Logística</option>
+          <option value="Administração">Administração</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100" onclick="openModal()"><i class="bi bi-plus-lg"></i> Novo</button>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div id="reportList" class="row g-4" data-aos="fade-up"></div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Novo Relatório</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="reportForm">
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" class="form-control" id="reportName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tipo</label>
+              <select class="form-select" id="reportType" required>
+                <option value="">Selecione</option>
+                <option value="Financeiro">Financeiro</option>
+                <option value="Acadêmico">Acadêmico</option>
+                <option value="Frequência">Frequência</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Área</label>
+              <select class="form-select" id="reportArea" required>
+                <option value="">Selecione</option>
+                <option value="Web Design">Web Design</option>
+                <option value="Logística">Logística</option>
+                <option value="Administração">Administração</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Data</label>
+              <input type="text" class="form-control" id="reportDate" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Descrição</label>
+              <textarea class="form-control" id="reportDesc" rows="3"></textarea>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    flatpickr("#reportDate", { dateFormat: "Y-m-d" });
+    flatpickr("#dateFilter", { dateFormat: "Y-m-d" });
+
+    // Custom ParticlesJS Config (ciano e branco)
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 60 },
+        color: { value: ["#00ffff", "#ffffff"] },
+        shape: { type: "circle" },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: {
+          enable: true,
+          distance: 120,
+          color: "#00ffff",
+          opacity: 0.4,
+          width: 1
+        },
+        move: {
+          enable: true,
+          speed: 1.2,
+          direction: "none",
+          out_mode: "out"
+        }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 100 },
+          push: { particles_nb: 4 }
+        }
+      },
+      retina_detect: true
+    });
+
+    const reportList = document.getElementById("reportList");
+    const modal = new bootstrap.Modal(document.getElementById("reportModal"));
+    const form = document.getElementById("reportForm");
+    let reports = JSON.parse(localStorage.getItem("evaReports")) || [];
+    let editIndex = null;
+
+    const render = () => {
+      reportList.innerHTML = "";
+      const search = document.getElementById("search").value.toLowerCase();
+      const date = document.getElementById("dateFilter").value;
+      const type = document.getElementById("typeFilter").value;
+      const area = document.getElementById("areaFilter").value;
+
+      const filtered = reports.filter(r =>
+        (!search || r.name.toLowerCase().includes(search)) &&
+        (!date || r.date === date) &&
+        (!type || r.type === type) &&
+        (!area || r.area === area)
+      );
+
+      if (filtered.length === 0)
+        return reportList.innerHTML = `<p class='text-center text-muted'>Nenhum relatório encontrado.</p>`;
+
+      filtered.forEach((r, i) => {
+        const col = document.createElement("div");
+        col.className = "col-md-6";
+        col.innerHTML = `
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <h5 class="card-title text-primary">${r.name}</h5>
+            <p class="card-text">
+              <strong>Tipo:</strong> ${r.type}<br>
+              <strong>Área:</strong> ${r.area}<br>
+              <strong>Data:</strong> ${r.date}<br>
+              ${r.desc || ""}
+            </p>
+            <div class="d-flex justify-content-end gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="editReport(${i})"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteReport(${i})"><i class="bi bi-trash"></i></button>
+              <button class="btn btn-sm btn-outline-success" onclick="exportReport(${i})"><i class="bi bi-download"></i></button>
+            </div>
+          </div>
+        </div>`;
+        reportList.appendChild(col);
+      });
+    };
+
+    form.onsubmit = e => {
+      e.preventDefault();
+      const r = {
+        name: form.reportName.value,
+        type: form.reportType.value,
+        area: form.reportArea.value,
+        date: form.reportDate.value,
+        desc: form.reportDesc.value
+      };
+      if (editIndex !== null) {
+        reports[editIndex] = r;
+      } else {
+        reports.push(r);
+      }
+      localStorage.setItem("evaReports", JSON.stringify(reports));
+      form.reset();
+      editIndex = null;
+      modal.hide();
+      render();
+    };
+
+    const openModal = (index = null) => {
+      editIndex = index;
+      if (index !== null) {
+        const r = reports[index];
+        form.reportName.value = r.name;
+        form.reportType.value = r.type;
+        form.reportArea.value = r.area;
+        form.reportDate.value = r.date;
+        form.reportDesc.value = r.desc;
+      } else {
+        form.reset();
+      }
+      modal.show();
+    };
+
+    const editReport = i => openModal(i);
+    const deleteReport = i => {
+      if (confirm("Deseja excluir este relatório?")) {
+        reports.splice(i, 1);
+        localStorage.setItem("evaReports", JSON.stringify(reports));
+        render();
+      }
+    };
+    const exportReport = i => {
+      const r = reports[i];
+      const blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${r.name.replace(/\s+/g, '_')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+    document.getElementById("search").oninput = render;
+    document.getElementById("dateFilter").onchange = render;
+    document.getElementById("typeFilter").onchange = render;
+    document.getElementById("areaFilter").onchange = render;
+    render();
+  </script>
+</body>
+</html>

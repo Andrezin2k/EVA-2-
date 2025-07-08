@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cronogramas - E.V.A</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0b80a3;
+      --bg2: #60aaff;
+      --text: #ffffff;
+      --glass: rgba(255,255,255,0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(270deg, var(--bg1), var(--bg2));
+      background-size: 400% 400%;
+      animation: gradient 10s ease infinite;
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-top: 6rem;
+    }
+
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      background: rgba(57, 75, 95, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
+      color: white;
+    }
+
+    .nav-links a {
+      color: white;
+      margin-left: 1rem;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 2rem;
+      background: var(--glass);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .actions {
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    #calendar {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <header>
+    <div><i class="bi bi-house me-2"></i> E.V.A - Cronogramas</div>
+    <nav class="nav-links">
+      <a href="home.html"><i class="bi bi-arrow-left"></i> Voltar</a>
+      <a href="relatorios.html"><i class="bi bi-file-earmark-text"></i> Relatórios</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="actions">
+      <button class="btn" onclick="exportarEventos()"><i class="bi bi-download"></i> Baixar Cronograma</button>
+    </div>
+    <div id='calendar'></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.4 },
+        size: { value: 3 },
+        line_linked: {
+          enable: true,
+          distance: 150,
+          color: "#ffffff",
+          opacity: 0.2,
+          width: 1
+        },
+        move: { enable: true, speed: 2 }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 100 },
+          push: { particles_nb: 4 }
+        }
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        editable: true,
+        selectable: true,
+        select: function(info) {
+          const desc = prompt('Descrição do evento:');
+          if (desc) {
+            calendar.addEvent({
+              title: desc,
+              start: info.startStr,
+              end: info.endStr,
+              allDay: info.allDay
+            });
+          }
+        },
+        eventClick: function(info) {
+          if (confirm(`Marcar o evento "${info.event.title}" como concluído?`)) {
+            info.el.style.backgroundColor = '#28a745';
+            info.el.style.opacity = 0.6;
+          }
+        }
+      });
+      calendar.render();
+      window.calendar = calendar;
+    });
+
+    function exportarEventos() {
+      const eventos = window.calendar.getEvents();
+      const dados = eventos.map(e => `- ${e.title}: ${e.start.toLocaleDateString()}`).join('\n');
+      const blob = new Blob([dados], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'cronograma.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

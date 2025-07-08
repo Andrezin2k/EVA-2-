@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E.V.A - Home Professor</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --text-color: #ffffff;
+      --btn-bg: rgba(57, 75, 95, 0.8);
+    }
+
+    * {
+      font-family: 'Poppins', sans-serif;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: var(--text-color);
+      background: linear-gradient(270deg, #0b80a3, #60aaff, #6a9faf);
+      background-size: 600% 600%;
+      animation: gradientBG 15s ease infinite;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(57, 75, 95, 0.8);
+      backdrop-filter: blur(8px);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .nav-links a {
+      margin-left: 1rem;
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform 0.3s, color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #e0f7fa;
+      transform: scale(1.1);
+    }
+
+    .icon-click i {
+      transition: transform 0.3s ease;
+    }
+
+    .icon-click:hover i {
+      transform: rotate(15deg) scale(1.2);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 120px;
+      gap: 1rem;
+      text-align: center;
+      animation: fadeIn 2s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-large {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 0.75rem;
+      background: var(--btn-bg);
+      color: var(--text-color);
+      border: none;
+      max-width: 300px;
+      width: 90%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .btn-large:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+    }
+
+    h1, h2 {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #0e2433;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.8em;
+      color: #333;
+      padding: 1rem;
+      backdrop-filter: blur(8px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-welcome {
+      position: fixed;
+      bottom: -100%;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #121212;
+      padding: 1rem 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      z-index: 20;
+      max-width: 300px;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+
+    .modal-welcome.show {
+      bottom: 20px;
+      opacity: 1;
+    }
+
+    .close-modal {
+      cursor: pointer;
+      color: #666;
+      font-size: 1.2rem;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      transition: color 0.3s;
+    }
+
+    .close-modal:hover {
+      color: #000;
+    }
+
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--btn-bg);
+      color: white;
+      padding: 0.8rem 1rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      transition: transform 0.3s ease;
+      z-index: 50;
+    }
+
+    .back-to-top:hover {
+      transform: scale(1.1);
+    }
+
+    @media(max-width: 768px) {
+      .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="particles-js"></div>
+
+  <audio id="clickSound" src="click.mp3"></audio>
+  <audio id="ambientSound" src="ambiente.mp3" loop></audio>
+
+  <header>
+    <div class="d-flex align-items-center icon-click">
+      <i class="bi bi-house-door fs-3 me-2"></i>
+      <span class="fs-5">E.V.A</span>
+    </div>
+    <nav class="nav-links">
+      <a href="perfil.html" class="icon-click">
+        <i class="bi bi-person-circle me-1"></i>Perfil
+      </a>
+      <a href="logout.html" class="icon-click">
+        <i class="bi bi-box-arrow-right me-1"></i>Logout
+      </a>
+      <a href="termos.html" class="icon-click">
+        <i class="bi bi-file-earmark-text me-1"></i>Termos
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Bem-vindo(a) Professor(a)</h2>
+    <h1>Escolha uma Opção</h1>
+
+    <button onclick="playClick(); location.href='per.html';" class="btn btn-large">
+      <i class="bi bi-journal-text me-2 fs-4"></i>PER
+    </button>
+
+    <button onclick="playClick(); location.href='situacoes.html';" class="btn btn-large">
+      <i class="bi bi-calendar-event me-2 fs-4"></i>Situações de Aprendizagem
+    </button>
+
+    <button onclick="playClick(); location.href='avaliacoes.html';" class="btn btn-large">
+      <i class="bi bi-file-earmark-text me-2 fs-4"></i>Avaliações
+    </button>
+
+    <button onclick="playClick(); location.href='relatorios.html';" class="btn btn-large">
+      <i class="bi bi-clipboard-data me-2 fs-4"></i>Relatórios
+    </button>
+
+    <button onclick="playClick(); location.href='cronograma.html';" class="btn btn-large">
+      <i class="bi bi-clock me-2 fs-4"></i>Cronogramas
+    </button>
+    </main>
+  <footer class="footer">
+    &copy; 2025 Plataforma E.V.A. Todos os direitos reservados.
+  </footer>
+
+  <div class="modal-welcome" id="welcomeModal">
+    <span class="close-modal" onclick="closeModal()">&times;</span>
+    <h3>Bem-vindo(a)!</h3>
+    <p>Aproveite os recursos da plataforma E.V.A.</p>
+  </div>
+
+  <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+    <i class="bi bi-arrow-up"></i>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2 }
+      },
+      interactivity: {
+        detect_on: "canvas",
+        events: {
+          onhover: { enable: true, mode: "repulse" },
+          onclick: { enable: true, mode: "push" }
+        },
+        modes: {
+          repulse: { distance: 100 },
+          push: { particles_nb: 4 }
+        }
+      }
+    });
+
+    const clickSound = document.getElementById('clickSound');
+    const ambient = document.getElementById('ambientSound');
+
+    function playClick() {
+      clickSound.currentTime = 0;
+      clickSound.play();
+    }
+
+    document.querySelectorAll('.icon-click').forEach(el => {
+      el.addEventListener('click', playClick);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      ambient.volume = 0.1;
+      ambient.play().catch(() => {
+        console.log('Som ambiente bloqueado. Interaja com a página para ativar.');
+      });
+
+      setTimeout(() => {
+        document.getElementById('welcomeModal').classList.add('show');
+      }, 1000);
+    });
+
+    function closeModal() {
+      document.getElementById('welcomeModal').classList.remove('show');
+    }
+
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backToTop.style.display = window.scrollY > 200 ? 'block' : 'none';
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Situações de Aprendizagem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #3f4a6b;
+      --bg: #f8f9fa;
+      --text: #333;
+      --card: #fff;
+      --border: #ddd;
+    }
+    * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #3f4a6b, #0f2027);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .container {
+      background: var(--bg);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 700px;
+      margin: 2rem;
+    }
+    h2, h3 { color: var(--primary); }
+    input, select, button {
+      margin-bottom: 1rem;
+    }
+    input[type="file"] {
+      padding: 0.5rem;
+    }
+    .file-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .file-actions button {
+      margin-left: 0.5rem;
+      border: none;
+      background: transparent;
+      color: var(--primary);
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: 0.4s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+<div class="container">
+  <a href="home.html" class="btn btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Voltar</a>
+  <h2><i class="bi bi-book me-2"></i> Situações de Aprendizagem</h2>
+
+  <select id="filterCategoria" class="form-select">
+    <option value="">Todas as Categorias</option>
+    <option value="Web">Web</option>
+    <option value="Logística">Logística</option>
+    <option value="Administração">Administração</option>
+  </select>
+  <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar pelo nome...">
+  <input type="date" id="filterDate" class="form-control">
+  <button id="btnOrdenar" class="btn btn-outline-primary w-100"><i class="bi bi-sort-alpha-down"></i> Ordenar A-Z</button>
+
+  <input type="file" id="arquivo" class="form-control" multiple>
+  <button id="btnEnviar" class="btn btn-primary w-100"><i class="bi bi-upload"></i> Enviar Arquivo(s)</button>
+  <button id="btnExportar" class="btn btn-outline-secondary w-100"><i class="bi bi-download"></i> Exportar Todos</button>
+
+  <h3 class="mt-4">Arquivos Cadastrados (<span id="totalCount">0</span>)</h3>
+  <div id="arquivosList"></div>
+
+  <footer class="mt-4">&copy; 2025 Situações de Aprendizagem</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 80 },
+      color: { value: "#ffffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.3 },
+      size: { value: 3 },
+      move: { enable: true, speed: 2 },
+      line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.2, width: 1 }
+    },
+    interactivity: {
+      detect_on: "canvas",
+      events: { onhover: { enable: true, mode: "repulse" } },
+      modes: { repulse: { distance: 100 } }
+    }
+  });
+
+  let arquivos = JSON.parse(localStorage.getItem('situacoesArquivos')) || [];
+  const toast = document.getElementById('toast');
+
+  function mostrarToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  function renderArquivos() {
+    const filtro = document.getElementById('searchInput').value.toLowerCase();
+    const dataFiltro = document.getElementById('filterDate').value;
+    const categoriaFiltro = document.getElementById('filterCategoria').value;
+    const container = document.getElementById('arquivosList');
+    container.innerHTML = '';
+
+    const filtrados = arquivos.filter(file =>
+      file.nome.toLowerCase().includes(filtro) &&
+      (!dataFiltro || file.data.startsWith(dataFiltro)) &&
+      (!categoriaFiltro || file.categoria === categoriaFiltro)
+    );
+
+    document.getElementById('totalCount').textContent = filtrados.length;
+
+    if (!filtrados.length) {
+      container.innerHTML = '<div class="text-muted">Nenhum arquivo.</div>';
+    } else {
+      filtrados.forEach((file, index) => {
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.innerHTML = `
+          <span>${file.nome} <small>(${file.data} - ${file.categoria})</small></span>
+          <div class="file-actions">
+            <button onclick="baixarArquivo(${index})"><i class="bi bi-download"></i></button>
+            <button onclick="editarArquivo(${index})"><i class="bi bi-pencil"></i></button>
+            <button onclick="removerArquivo(${index})"><i class="bi bi-trash"></i></button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+  }
+
+  function enviarArquivos() {
+    const categoria = document.getElementById('filterCategoria').value || 'Sem Categoria';
+    const input = document.getElementById('arquivo');
+    const files = Array.from(input.files);
+    if (!files.length) return mostrarToast('Nenhum arquivo selecionado.');
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64 = e.target.result;
+        const data = new Date().toISOString().split('T')[0];
+        arquivos.push({ nome: file.name, data, categoria, conteudo: base64 });
+        localStorage.setItem('situacoesArquivos', JSON.stringify(arquivos));
+        renderArquivos();
+        mostrarToast('Arquivo(s) enviado(s)!');
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  }
+
+  function baixarArquivo(index) {
+    const file = arquivos[index];
+    const a = document.createElement('a');
+    a.href = file.conteudo;
+    a.download = file.nome;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function editarArquivo(index) {
+    const novoNome = prompt('Novo nome:', arquivos[index].nome);
+    const novaCategoria = prompt('Nova categoria:', arquivos[index].categoria);
+    if (novoNome && novaCategoria) {
+      arquivos[index].nome = novoNome;
+      arquivos[index].categoria = novaCategoria;
+      localStorage.setItem('situacoesArquivos', JSON.stringify(arquivos));
+      renderArquivos();
+      mostrarToast('Arquivo editado!');
+    }
+  }
+
+  function removerArquivo(index) {
+    if (confirm('Deseja remover este arquivo?')) {
+      arquivos.splice(index, 1);
+      localStorage.setItem('situacoesArquivos', JSON.stringify(arquivos));
+      renderArquivos();
+      mostrarToast('Arquivo removido!');
+    }
+  }
+
+  function ordenarArquivos() {
+    arquivos.sort((a, b) => a.nome.localeCompare(b.nome));
+    localStorage.setItem('situacoesArquivos', JSON.stringify(arquivos));
+    renderArquivos();
+    mostrarToast('Arquivos ordenados!');
+  }
+
+  function exportarArquivos() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(arquivos));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.href = dataStr;
+    dlAnchor.download = "situacoes_arquivos.json";
+    dlAnchor.click();
+    mostrarToast('Exportado!');
+  }
+
+  document.getElementById('searchInput').addEventListener('input', renderArquivos);
+  document.getElementById('filterDate').addEventListener('change', renderArquivos);
+  document.getElementById('filterCategoria').addEventListener('change', renderArquivos);
+  document.getElementById('btnOrdenar').addEventListener('click', ordenarArquivos);
+  document.getElementById('btnEnviar').addEventListener('click', enviarArquivos);
+  document.getElementById('btnExportar').addEventListener('click', exportarArquivos);
+
+  renderArquivos();
+</script>
+
+</body>
+</html>

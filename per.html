@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PER - Portal do Professor</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #3f4a6b;
+      --bg: #f8f9fa;
+      --text: #333;
+      --dark-bg: #0e1824;
+      --dark-text: #f1f1f1;
+    }
+
+    * {
+      font-family: 'Inter', sans-serif;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .dark-mode {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      background: linear-gradient(135deg, rgba(63, 74, 107, 0.9), rgba(0, 0, 0, 0.7));
+    }
+
+    header {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(14, 24, 36, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      animation: slideDown 0.7s ease;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .header-btn {
+      display: flex;
+      align-items: center;
+      background: transparent;
+      border: 1px solid white;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      color: white;
+      text-decoration: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .header-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+
+    main {
+      flex: 1;
+      max-width: 700px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.85);
+      margin: 2rem auto;
+      padding: 2rem;
+      transition: background 0.3s;
+      animation: fadeInUp 1s ease;
+    }
+
+    .dark-mode main {
+      background: rgba(14, 24, 36, 0.85);
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      animation: fadeInDown 1s ease;
+    }
+
+    .description {
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      animation: fadeInDown 1.2s ease;
+    }
+
+    form, .search-box {
+      width: 100%;
+      animation: fadeInUp 1.3s ease;
+    }
+
+    .file-item {
+      padding: 0.75rem 1rem;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .file-item:hover {
+      transform: translateY(-3px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border: none;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .btn-primary:hover {
+      background: #2c354d;
+      transform: scale(1.02);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      display: none;
+      z-index: 1000;
+    }
+
+    footer {
+      width: 100%;
+      padding: 1rem;
+      text-align: center;
+      background: rgba(14, 24, 36, 0.9);
+      color: white;
+      font-size: 0.85rem;
+      transition: background 0.3s;
+      animation: slideUp 0.7s ease;
+      margin-top: auto;
+    }
+
+    footer:hover {
+      background: rgba(63, 74, 107, 0.9);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div id="particles-js"></div>
+
+<header>
+  <a href="home.html" class="header-btn">
+    <i class="bi bi-arrow-left me-2"></i>Voltar
+  </a>
+  <button id="toggleDark" class="header-btn">
+    <i class="bi bi-moon"></i>
+  </button>
+</header>
+
+<main>
+  <h2><i class="bi bi-journal-text me-2"></i>PER</h2>
+  <p class="description">
+    Envie, pesquise e gerencie seus arquivos relacionados ao planejamento pedagógico.
+  </p>
+
+  <div class="mb-3">
+    <label for="categoriaSelect" class="form-label">Escolha a área:</label>
+    <select id="categoriaSelect" class="form-select">
+      <option value="Web Design">Web Design</option>
+      <option value="Administração">Administração</option>
+      <option value="Logística">Logística</option>
+    </select>
+  </div>
+
+  <div class="counter">
+    Total de arquivos: <span id="totalArquivos">0</span>
+  </div>
+
+  <div class="search-box mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar arquivo...">
+  </div>
+
+  <form id="uploadForm">
+    <input type="file" id="arquivo" class="form-control mb-3" required>
+    <button type="submit" class="btn btn-primary w-100">
+      <i class="bi bi-upload me-2"></i>Enviar Arquivo
+    </button>
+  </form>
+
+  <div class="file-list" id="fileList"></div>
+  <div class="no-files" id="noFilesMsg">Nenhum arquivo enviado.</div>
+
+  <button class="btn btn-danger mt-3" onclick="limparTudo()">
+    <i class="bi bi-trash me-2"></i>Limpar Todos os Arquivos
+  </button>
+</main>
+
+<footer>
+  &copy; 2025 Portal do Professor | Todos os direitos reservados.
+</footer>
+
+<div class="toast" id="toastMsg"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+  particlesJS('particles-js', {
+    particles: {
+      number: { value: 80 },
+      color: { value: "#ffffff" },
+      shape: { type: "circle" },
+      opacity: { value: 0.5 },
+      size: { value: 3 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: {
+      events: { onhover: { enable: true, mode: "repulse" } },
+      modes: { repulse: { distance: 100 } }
+    }
+  });
+
+  const uploadForm = document.getElementById('uploadForm');
+  const fileList = document.getElementById('fileList');
+  const totalArquivos = document.getElementById('totalArquivos');
+  const searchInput = document.getElementById('searchInput');
+  const noFilesMsg = document.getElementById('noFilesMsg');
+  const toastMsg = document.getElementById('toastMsg');
+  const categoriaSelect = document.getElementById('categoriaSelect');
+
+  let arquivos = JSON.parse(localStorage.getItem('perArquivos')) || [];
+
+  function showToast(msg) {
+    toastMsg.textContent = msg;
+    toastMsg.style.display = 'block';
+    setTimeout(() => toastMsg.style.display = 'none', 3000);
+  }
+
+  function renderArquivos(filtro = '') {
+    fileList.innerHTML = '';
+    const categoriaAtual = categoriaSelect.value;
+
+    const arquivosFiltrados = arquivos.filter(file =>
+      file.categoria === categoriaAtual &&
+      file.nome.toLowerCase().includes(filtro.toLowerCase())
+    );
+
+    noFilesMsg.style.display = arquivosFiltrados.length ? 'none' : 'block';
+
+    arquivosFiltrados.forEach((file, index) => {
+      const div = document.createElement('div');
+      div.className = 'file-item';
+      div.innerHTML = `
+        <div>
+          <i class="bi bi-file-earmark-text me-2"></i>${file.nome}
+          <small class="text-muted d-block">${file.data} - ${file.categoria}</small>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-outline-primary" onclick="baixarArquivo('${file.nome}')">
+            <i class="bi bi-download"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="removerArquivo(${index})">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+      `;
+      fileList.appendChild(div);
+    });
+
+    const total = arquivos.filter(file => file.categoria === categoriaAtual).length;
+    totalArquivos.textContent = total;
+  }
+
+  uploadForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const arquivoInput = document.getElementById('arquivo');
+    const arquivo = arquivoInput.files[0];
+    if (!arquivo) return alert('Selecione um arquivo!');
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const conteudo = event.target.result;
+      const data = new Date().toLocaleString();
+      const categoria = categoriaSelect.value;
+
+      arquivos.push({ nome: arquivo.name, data, categoria, conteudo });
+      localStorage.setItem('perArquivos', JSON.stringify(arquivos));
+
+      renderArquivos(searchInput.value);
+      showToast('Arquivo salvo!');
+      uploadForm.reset();
+    };
+    reader.readAsDataURL(arquivo);
+  });
+
+  function removerArquivo(index) {
+    if (confirm('Deseja realmente remover este arquivo?')) {
+      arquivos.splice(index, 1);
+      localStorage.setItem('perArquivos', JSON.stringify(arquivos));
+      renderArquivos(searchInput.value);
+      showToast('Arquivo removido!');
+    }
+  }
+
+  function limparTudo() {
+    if (confirm('Deseja realmente apagar TODOS os arquivos?')) {
+      arquivos = [];
+      localStorage.setItem('perArquivos', JSON.stringify([]));
+      renderArquivos(searchInput.value);
+      showToast('Todos os arquivos foram apagados!');
+    }
+  }
+
+  function baixarArquivo(nome) {
+    const file = arquivos.find(arq => arq.nome === nome);
+    if (!file || !file.conteudo) {
+      showToast('Arquivo não encontrado.');
+      return;
+    }
+
+    const link = document.createElement('a');
+    link.href = file.conteudo;
+    link.download = file.nome;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast(`Download iniciado: ${file.nome}`);
+  }
+
+  searchInput.addEventListener('input', function() {
+    renderArquivos(this.value);
+  });
+
+  categoriaSelect.addEventListener('change', function() {
+    renderArquivos(searchInput.value);
+  });
+
+  document.getElementById('toggleDark').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+  });
+
+  renderArquivos();
+</script>
+
+</body>
+</html>

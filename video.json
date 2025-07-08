@@ -1,0 +1,112 @@
+[
+  {
+    "titulo": "HTML Básico",
+    "descricao": "Introdução ao HTML5.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign1.mp4"
+  },
+  {
+    "titulo": "CSS Intermediário",
+    "descricao": "Trabalhando com estilos modernos.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign2.mp4"
+  },
+  {
+    "titulo": "JavaScript Essencial",
+    "descricao": "Fundamentos do JS.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign3.mp4"
+  },
+  {
+    "titulo": "UX e UI Design",
+    "descricao": "Design centrado no usuário.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign4.mp4"
+  },
+  {
+    "titulo": "Responsividade com Bootstrap",
+    "descricao": "Sites adaptáveis com Bootstrap.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign5.mp4"
+  },
+  {
+    "titulo": "Web Acessível",
+    "descricao": "Boas práticas de acessibilidade.",
+    "area": "Web Design",
+    "arquivo": "videos/webdesign6.mp4"
+  },
+
+  {
+    "titulo": "Logística Empresarial",
+    "descricao": "Conceitos fundamentais.",
+    "area": "Logística",
+    "arquivo": "videos/logistica1.mp4"
+  },
+  {
+    "titulo": "Gestão de Estoque",
+    "descricao": "Controle e análise de estoque.",
+    "area": "Logística",
+    "arquivo": "videos/logistica2.mp4"
+  },
+  {
+    "titulo": "Transporte e Distribuição",
+    "descricao": "Logística na prática.",
+    "area": "Logística",
+    "arquivo": "videos/logistica3.mp4"
+  },
+  {
+    "titulo": "Logística Reversa",
+    "descricao": "Sustentabilidade na logística.",
+    "area": "Logística",
+    "arquivo": "videos/logistica4.mp4"
+  },
+  {
+    "titulo": "Armazenagem",
+    "descricao": "Organização de armazéns.",
+    "area": "Logística",
+    "arquivo": "videos/logistica5.mp4"
+  },
+  {
+    "titulo": "Logística 4.0",
+    "descricao": "Tecnologia e inovação logística.",
+    "area": "Logística",
+    "arquivo": "videos/logistica6.mp4"
+  },
+
+  {
+    "titulo": "Administração Geral",
+    "descricao": "Princípios da gestão.",
+    "area": "Administração",
+    "arquivo": "videos/adm1.mp4"
+  },
+  {
+    "titulo": "Marketing",
+    "descricao": "Fundamentos do marketing.",
+    "area": "Administração",
+    "arquivo": "videos/adm2.mp4"
+  },
+  {
+    "titulo": "Gestão Financeira",
+    "descricao": "Planejamento e controle.",
+    "area": "Administração",
+    "arquivo": "videos/adm3.mp4"
+  },
+  {
+    "titulo": "Empreendedorismo",
+    "descricao": "Criando seu próprio negócio.",
+    "area": "Administração",
+    "arquivo": "videos/adm4.mp4"
+  },
+  {
+    "titulo": "Gestão de Pessoas",
+    "descricao": "Liderança e equipes.",
+    "area": "Administração",
+    "arquivo": "videos/adm5.mp4"
+  },
+  {
+    "titulo": "Administração 4.0",
+    "descricao": "Novos desafios da era digital.",
+    "area": "Administração",
+    "arquivo": "videos/adm6.mp4"
+  }
+]
