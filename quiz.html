@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quiz Educacional E.V.A - Completo</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+<style>
+  :root {
+    --cor-ciano: #00ffff;
+    --cor-azul-escuro: #003344;
+    --cor-branco: #fff;
+    --bg-light: linear-gradient(270deg, #005bea, #00c9ff);
+    --bg-dark: linear-gradient(270deg, #001522, #003344);
+  }
+  * {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--cor-branco);
+    background: var(--bg-light);
+    background-size: 600% 600%;
+    animation: bgAnim 20s ease infinite;
+    overflow-x: hidden;
+  }
+  body.dark-mode {
+    background: var(--bg-dark);
+  }
+  @keyframes bgAnim {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  #particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    z-index: -1;
+  }
+  header {
+    background: rgba(0,30,60,0.8);
+    backdrop-filter: blur(8px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  header nav a {
+    color: var(--cor-branco);
+    margin-left: 1rem;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+  }
+  header nav a:hover {
+    text-decoration: underline;
+  }
+  main {
+    max-width: 900px;
+    margin: 110px auto 40px;
+    background: rgba(0,30,60,0.85);
+    padding: 2rem 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0,255,255,0.15);
+  }
+  h2, h3 {
+    text-align: center;
+    margin: 0 0 15px 0;
+  }
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 600;
+  }
+  input[type=text], select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+  }
+  .btn {
+    background: var(--cor-ciano);
+    border: none;
+    color: var(--cor-azul-escuro);
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+  .btn:hover {
+    background: #00bcd4;
+    color: white;
+  }
+  .question-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+  }
+  .question-text {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .option {
+    background: rgba(255,255,255,0.1);
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+    border: 2px solid transparent;
+  }
+  .option:hover {
+    background: rgba(0,255,255,0.2);
+  }
+  .option.selected {
+    border-color: var(--cor-ciano);
+    background: rgba(0,255,255,0.4);
+  }
+  .option.correct {
+    background: #00ffccaa;
+    border-color: #00cc99;
+  }
+  .option.incorrect {
+    background: #ff4c4caa;
+    border-color: #cc0000;
+  }
+  #timer {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-top: 15px;
+  }
+  .progress {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    overflow: hidden;
+    height: 20px;
+    margin-top: 10px;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--cor-ciano);
+    transition: width 0.4s ease;
+  }
+  #result, #ranking, #explanations, #shareSection, #levelSection {
+    margin-top: 30px;
+    text-align: center;
+  }
+  #ranking {
+    list-style: none;
+    padding-left: 0;
+  }
+  #ranking li {
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  #explanations div {
+    margin-top: 10px;
+    text-align: left;
+    background: rgba(0,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  #darkModeToggle {
+    background: none;
+    border: 2px solid var(--cor-ciano);
+    color: var(--cor-ciano);
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+  }
+  #darkModeToggle:hover {
+    background: var(--cor-ciano);
+    color: var(--cor-azul-escuro);
+  }
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 50;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background: rgba(0,0,0,0.7);
+  }
+  .modal-content {
+    background: #003344;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 600px;
+    color: white;
+    position: relative;
+  }
+  .close-btn {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 25px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div id="particles-js"></div>
+
+<header>
+  <h1><i class="bi bi-lightning-charge"></i> E.V.A - Quiz Educacional</h1>
+  <nav>
+    <a href="#" id="btnHome">Início</a>
+    <a href="homealuno.html"><i class="bi bi-box-arrow-right me-1"></i>Voltar</a>
+    <button id="darkModeToggle">Modo Escuro</button>
+  </nav>
+</header>
+
+<main>
+  <section id="startSection">
+    <h2>Bem-vindo ao Quiz E.V.A</h2>
+    <p>Digite seu nome e escolha uma área para começar.</p>
+    <label for="inputName">Seu nome:</label>
+    <input type="text" id="inputName" placeholder="Digite seu nome..." />
+    <label for="selectArea">Escolha a área:</label>
+    <select id="selectArea">
+      <option value="" disabled selected>Selecione...</option>
+      <option value="web">Web Design</option>
+      <option value="logistica">Logística</option>
+      <option value="administracao">Administração</option>
+    </select>
+    <button class="btn" id="startQuizBtn">Começar Quiz</button>
+  </section>
+
+  <section id="quizSection" style="display:none;">
+    <div class="question-card">
+      <div class="question-text" id="questionText"></div>
+      <div class="options" id="optionsContainer"></div>
+      <button class="btn" id="confirmAnswerBtn" disabled>Confirmar</button>
+      <div id="timer">Tempo: 60s</div>
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+      <button class="btn" id="extraTimeBtn" title="Adicionar 10 segundos (máximo 3 vezes)">+10s</button>
+    </div>
+  </section>
+
+  <section id="resultSection" style="display:none;">
+    <h2>Resultado</h2>
+    <p id="resultText"></p>
+    <div id="levelSection"></div>
+    <div id="explanations"></div>
+    <h3>Ranking Geral</h3>
+    <ul id="rankingList"></ul>
+    <div id="shareSection">
+      <button class="btn" id="shareBtn">Compartilhar Resultado</button>
+      <button class="btn" id="exportPdfBtn">Exportar Resultado (PDF)</button>
+    </div>
+    <button class="btn" id="restartQuizBtn">Refazer Quiz</button>
+  </section>
+</main>
+
+<!-- Modal explicações -->
+<div id="explanationModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h3>Explicação</h3>
+    <p id="modalExplanationText"></p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // Partículas
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80 },
+      color: { value: ["#00ffff", "#0088cc", "#ffffff"] },
+      shape: { type: "circle" },
+      opacity: { value: 0.4 },
+      size: { value: 3 },
+      line_linked: { enable: true, distance: 120, color: "#00ffff", opacity: 0.25, width: 1 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+  });
+
+  // Variáveis globais
+  const quizData = {
+    web: [
+      { q: "Qual linguagem é usada para estruturar páginas web?", options: ["CSS", "HTML", "JavaScript"], correct: 1, explanation: "HTML é a linguagem de marcação usada para estruturar páginas web.", difficulty: 1 },
+      { q: "O que significa CSS?", options: ["Central Style System", "Cascading Style Sheets", "Computer Style Syntax"], correct: 1, explanation: "CSS significa Cascading Style Sheets e é usado para estilizar elementos HTML.", difficulty: 1 },
+      { q: "Qual é a função do JavaScript?", options: ["Estruturar conteúdo", "Estilizar conteúdo", "Adicionar interatividade"], correct: 2, explanation: "JavaScript adiciona interatividade e comportamento dinâmico às páginas.", difficulty: 2 },
+      { q: "Qual tag HTML representa um título de nível 1?", options: ["<h1>", "<title>", "<header>"], correct: 0, explanation: "A tag <h1> é usada para títulos principais.", difficulty: 1 },
+      { q: "Qual propriedade CSS altera a cor do texto?", options: ["font-color", "color", "text-color"], correct: 1, explanation: "A propriedade 'color' define a cor do texto.", difficulty: 1 },
+      { q: "O que significa DOM?", options: ["Document Object Model", "Data Object Model", "Document Orientation Mode"], correct: 0, explanation: "DOM é uma representação em árvore da estrutura HTML da página.", difficulty: 2 },
+      { q: "Qual método JavaScript seleciona um elemento pelo ID?", options: ["getElementById", "querySelectorAll", "getElementsByClassName"], correct: 0, explanation: "getElementById seleciona um elemento pelo seu ID.", difficulty: 2 },
+      { q: "Qual tag é usada para inserir um link?", options: ["<link>", "<a>", "<href>"], correct: 1, explanation: "A tag <a> define um link clicável.", difficulty: 1 },
+      { q: "Como declarar uma variável em JavaScript?", options: ["var", "int", "declare"], correct: 0, explanation: "A palavra-chave 'var' declara uma variável.", difficulty: 2 },
+      { q: "Qual evento é acionado ao clicar em um botão?", options: ["onclick", "onhover", "onchange"], correct: 0, explanation: "O evento 'onclick' é disparado ao clicar.", difficulty: 1 }
+    ],
+    logistica: [
+      { q: "Qual área é responsável pelo controle de estoque?", options: ["Administração", "Logística", "Web Design"], correct: 1, explanation: "A Logística gerencia estoques, transporte e armazenagem.", difficulty: 1 },
+      { q: "O que significa Just in Time?", options: ["Produzir o quanto antes", "Entregar antes do prazo", "Produzir apenas o necessário, na hora certa"], correct: 2, explanation: "Just in Time é uma estratégia para reduzir estoques e produzir sob demanda.", difficulty: 2 },
+      { q: "Qual é o objetivo da logística reversa?", options: ["Distribuição eficiente", "Devolver produtos ao fornecedor", "Gestão financeira"], correct: 1, explanation: "Logística reversa trata da devolução e reaproveitamento de produtos.", difficulty: 2 },
+      { q: "Qual documento registra a entrada e saída de mercadorias?", options: ["Nota fiscal", "Romaneio", "Pedido de compra"], correct: 1, explanation: "O romaneio registra detalhes das movimentações.", difficulty: 1 },
+      { q: "O que é lead time?", options: ["Tempo total do pedido ao recebimento", "Tempo de produção", "Tempo de entrega"], correct: 0, explanation: "Lead time é o tempo entre o pedido e a entrega final.", difficulty: 2 },
+      { q: "O que é cross-docking?", options: ["Estoque intermediário", "Recebimento direto para expedição", "Transporte internacional"], correct: 1, explanation: "Cross-docking reduz tempo de armazenamento.", difficulty: 3 },
+      { q: "Qual é a função do picking?", options: ["Separar mercadorias", "Empacotar produtos", "Transportar carga"], correct: 0, explanation: "Picking é a separação dos itens para pedidos.", difficulty: 1 },
+      { q: "O que significa FIFO?", options: ["First In First Out", "Fast Input Fast Output", "Final Inventory For Order"], correct: 0, explanation: "FIFO é método de controle de estoque.", difficulty: 2 },
+      { q: "Qual é o principal desafio da logística internacional?", options: ["Comunicação", "Legislação e impostos", "Tecnologia"], correct: 1, explanation: "Legislação e impostos são grandes desafios.", difficulty: 3 },
+      { q: "O que é transportadora?", options: ["Empresa que entrega produtos", "Fornecedor de matéria-prima", "Cliente final"], correct: 0, explanation: "Transportadora realiza o transporte de cargas.", difficulty: 1 }
+    ],
+    administracao: [
+      { q: "Qual é a principal função da Administração?", options: ["Gerenciar recursos e pessoas", "Criar páginas web", "Fazer entregas"], correct: 0, explanation: "A administração planeja, organiza, dirige e controla os recursos.", difficulty: 1 },
+      { q: "O que é organograma?", options: ["Tabela de estoque", "Representação gráfica da estrutura organizacional", "Folha de pagamento"], correct: 1, explanation: "Organograma representa a estrutura hierárquica da empresa.", difficulty: 1 },
+      { q: "Qual é o ciclo PDCA?", options: ["Planejar, Desenvolver, Controlar, Ajustar", "Planejar, Executar, Verificar, Agir", "Produzir, Distribuir, Comercializar, Analisar"], correct: 1, explanation: "PDCA é uma metodologia de gestão para melhoria contínua.", difficulty: 2 },
+      { q: "O que significa SWOT?", options: ["Strengths, Weaknesses, Opportunities, Threats", "Systematic Work Organization Technique", "Software Work Order Tool"], correct: 0, explanation: "SWOT é análise de forças e fraquezas.", difficulty: 3 },
+      { q: "O que é capital de giro?", options: ["Recursos para operações diárias", "Investimento em máquinas", "Lucro líquido"], correct: 0, explanation: "Capital de giro é usado para financiar operações.", difficulty: 2 },
+      { q: "Qual função é responsável pelo RH?", options: ["Recursos Humanos", "Relações Históricas", "Rede Hospitalar"], correct: 0, explanation: "RH cuida do capital humano da empresa.", difficulty: 1 },
+      { q: "O que é benchmarking?", options: ["Comparação com concorrentes", "Treinamento interno", "Controle financeiro"], correct: 0, explanation: "Benchmarking busca melhores práticas no mercado.", difficulty: 3 },
+      { q: "Qual é o objetivo do planejamento estratégico?", options: ["Definir metas e ações", "Organizar eventos", "Controlar estoque"], correct: 0, explanation: "Planejamento estratégico define rumo da empresa.", difficulty: 2 },
+      { q: "O que é liderança situacional?", options: ["Adaptar estilo de liderança", "Mandar ordens rígidas", "Manter hierarquia fixa"], correct: 0, explanation: "Liderança situacional ajusta conforme contexto.", difficulty: 3 },
+      { q: "Qual é o conceito de outsourcing?", options: ["Terceirização de serviços", "Automação industrial", "Planejamento fiscal"], correct: 0, explanation: "Outsourcing é contratar terceiros para serviços.", difficulty: 2 }
+    ]
+  };
+
+  let currentArea = "";
+  let userName = "";
+  let currentQuestions = [];
+  let currentIndex = 0;
+  let score = 0;
+  let timerValue = 60;
+  let timerInterval = null;
+  let selectedOption = null;
+  let extraTimeUsed = 0;
+  const maxExtraTime = 3;
+  let modeEstudo = false;
+  let level = 1;
+  let achievements = [];
+  const rankingKey = "evaQuizRanking";
+  const progressKey = "evaQuizProgress";
+
+  // Elements
+  const inputName = document.getElementById("inputName");
+  const selectArea = document.getElementById("selectArea");
+  const startBtn = document.getElementById("startQuizBtn");
+  const startSection = document.getElementById("startSection");
+  const quizSection = document.getElementById("quizSection");
+  const resultSection = document.getElementById("resultSection");
+  const questionText = document.getElementById("questionText");
+  const optionsContainer = document.getElementById("optionsContainer");
+  const confirmBtn = document.getElementById("confirmAnswerBtn");
+  const timerDisplay = document.getElementById("timer");
+  const progressBar = document.getElementById("progressBar");
+  const extraTimeBtn = document.getElementById("extraTimeBtn");
+  const resultText = document.getElementById("resultText");
+  const rankingList = document.getElementById("rankingList");
+  const explanationsDiv = document.getElementById("explanations");
+  const shareBtn = document.getElementById("shareBtn");
+  const exportPdfBtn = document.getElementById("exportPdfBtn");
+  const restartBtn = document.getElementById("restartQuizBtn");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const btnBack = document.getElementById("btnBack");
+  const btnHome = document.getElementById("btnHome");
+  const levelSection = document.getElementById("levelSection");
+  const explanationModal = document.getElementById("explanationModal");
+  const modalExplanationText = document.getElementById("modalExplanationText");
+  const closeModalBtn = document.getElementById("closeModal");
+
+  // Sons
+  const clickSound = new Audio("https://cdn.pixabay.com/download/audio/2022/03/26/audio_7e0ebcdffd.mp3?filename=mouse-click-1.mp3");
+  const correctSound = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_f65c88038b.mp3?filename=correct-answer-2.mp3");
+  const wrongSound = new Audio("https://cdn.pixabay.com/download/audio/2021/08/04/audio_43505e8dbb.mp3?filename=wrong-answer-2.mp3");
+  const ambientSound = new Audio("https://cdn.pixabay.com/download/audio/2021/12/02/audio_6a8c96b792.mp3?filename=calm-ambient.mp3");
+  ambientSound.loop = true;
+  ambientSound.volume = 0.05;
+
+  // Inicialização
+  ambientSound.play();
+
+  // Funções
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  function startQuiz() {
+    userName = inputName.value.trim();
+    currentArea = selectArea.value;
+    if (!userName) {
+      alert("Por favor, digite seu nome.");
+      return;
+    }
+    if (!currentArea) {
+      alert("Por favor, escolha uma área.");
+      return;
+    }
+
+    // Preparar perguntas embaralhadas
+    currentQuestions = [...quizData[currentArea]];
+    shuffleArray(currentQuestions);
+    currentQuestions = currentQuestions.slice(0, 10);
+
+    score = 0;
+    currentIndex = 0;
+    timerValue = 60;
+    extraTimeUsed = 0;
+    selectedOption = null;
+    modeEstudo = false; // pode adicionar toggle depois
+    level = 1;
+    achievements = [];
+
+    // Salvar progresso
+    saveProgress();
+
+    startSection.style.display = "none";
+    quizSection.style.display = "block";
+    resultSection.style.display = "none";
+
+    updateQuestion();
+    startTimer();
+    updateProgressBar();
+    confirmBtn.disabled = true;
+    extraTimeBtn.disabled = false;
+  }
+
+  function updateQuestion() {
+    if (currentIndex >= currentQuestions.length) {
+      finishQuiz();
+      return;
+    }
+    const q = currentQuestions[currentIndex];
+    questionText.textContent = `${currentIndex + 1}. ${q.q}`;
+    optionsContainer.innerHTML = "";
+    q.options.forEach((opt, i) => {
+      const div = document.createElement("div");
+      div.classList.add("option");
+      div.textContent = opt;
+      div.dataset.index = i;
+      div.onclick = () => selectOption(div);
+      optionsContainer.appendChild(div);
+    });
+    selectedOption = null;
+    confirmBtn.disabled = true;
+  }
+
+  function selectOption(optionDiv) {
+    playClick();
+    if (selectedOption) {
+      selectedOption.classList.remove("selected");
+    }
+    selectedOption = optionDiv;
+    selectedOption.classList.add("selected");
+    confirmBtn.disabled = false;
+  }
+
+  function playClick() { clickSound.currentTime = 0; clickSound.play(); }
+  function playCorrect() { correctSound.currentTime = 0; correctSound.play(); }
+  function playWrong() { wrongSound.currentTime = 0; wrongSound.play(); }
+
+  function startTimer() {
+    clearInterval(timerInterval);
+    timerDisplay.textContent = `Tempo: ${timerValue}s`;
+    timerInterval = setInterval(() => {
+      timerValue--;
+      timerDisplay.textContent = `Tempo: ${timerValue}s`;
+      if (timerValue <= 0) {
+        clearInterval(timerInterval);
+        finishQuiz();
+      }
+    }, 1000);
+  }
+
+  function addExtraTime() {
+    if (extraTimeUsed >= maxExtraTime) {
+      alert("Você já usou o máximo de tempo extra.");
+      extraTimeBtn.disabled = true;
+      return;
+    }
+    timerValue += 10;
+    extraTimeUsed++;
+    timerDisplay.textContent = `Tempo: ${timerValue}s`;
+    playClick();
+    if (extraTimeUsed >= maxExtraTime) extraTimeBtn.disabled = true;
+  }
+
+  function confirmAnswer() {
+    if (!selectedOption) {
+      alert("Selecione uma resposta!");
+      return;
+    }
+    clearInterval(timerInterval);
+
+    const q = currentQuestions[currentIndex];
+    const chosenIndex = parseInt(selectedOption.dataset.index);
+
+    // Feedback visual e som
+    if (chosenIndex === q.correct) {
+      score += q.difficulty; // pontuação por dificuldade
+      playCorrect();
+      selectedOption.classList.add("correct");
+    } else {
+      playWrong();
+      selectedOption.classList.add("incorrect");
+      // mostra correta
+      [...optionsContainer.children].forEach(opt => {
+        if (parseInt(opt.dataset.index) === q.correct) opt.classList.add("correct");
+      });
+    }
+
+    confirmBtn.disabled = true;
+    extraTimeBtn.disabled = true;
+
+    // Mostrar explicação modal após 1s
+    setTimeout(() => {
+      showExplanation(q.explanation);
+    }, 800);
+  }
+
+  function showExplanation(text) {
+    modalExplanationText.textContent = text;
+    explanationModal.style.display = "block";
+  }
+  closeModalBtn.onclick = () => {
+    explanationModal.style.display = "none";
+    nextQuestion();
+  };
+  window.onclick = e => {
+    if (e.target === explanationModal) {
+      explanationModal.style.display = "none";
+      nextQuestion();
+    }
+  };
+
+  function nextQuestion() {
+    currentIndex++;
+    selectedOption = null;
+    updateProgressBar();
+    if (currentIndex >= currentQuestions.length) {
+      finishQuiz();
+      return;
+    }
+    updateQuestion();
+    timerValue = 60;
+    extraTimeUsed = 0;
+    extraTimeBtn.disabled = false;
+    confirmBtn.disabled = true;
+    startTimer();
+  }
+
+  function updateProgressBar() {
+    const percent = ((currentIndex) / currentQuestions.length) * 100;
+    progressBar.style.width = `${percent}%`;
+  }
+
+  function finishQuiz() {
+    clearInterval(timerInterval);
+    quizSection.style.display = "none";
+    resultSection.style.display = "block";
+    saveResult();
+    displayResult();
+  }
+
+  function saveResult() {
+    // salvar ranking localStorage
+    const storedRanking = JSON.parse(localStorage.getItem(rankingKey) || "[]");
+    storedRanking.push({ nome: userName, area: currentArea, pontos: score, total: currentQuestions.length });
+    storedRanking.sort((a,b) => b.pontos - a.pontos);
+    localStorage.setItem(rankingKey, JSON.stringify(storedRanking));
+  }
+
+  function displayResult() {
+    resultText.textContent = `${userName}, você fez ${score} pontos em ${currentQuestions.length} perguntas.`;
+    displayLevel();
+    displayRanking();
+    displayExplanations();
+  }
+
+  function displayLevel() {
+    let lvl = "Iniciante";
+    if (score >= 20) lvl = "Intermediário";
+    if (score >= 25) lvl = "Avançado";
+    if (score >= 28) lvl = "Mestre";
+    levelSection.textContent = `Nível: ${lvl}`;
+  }
+
+  function displayRanking() {
+    const storedRanking = JSON.parse(localStorage.getItem(rankingKey) || "[]");
+    if (storedRanking.length === 0) {
+      rankingList.innerHTML = "<li>Nenhum resultado registrado.</li>";
+      return;
+    }
+    rankingList.innerHTML = "";
+    storedRanking.slice(0, 10).forEach((item,i) => {
+      rankingList.innerHTML += `<li><strong>${i+1}. ${item.nome}</strong> - ${item.area} - ${item.pontos} pts</li>`;
+    });
+  }
+
+  function displayExplanations() {
+    explanationsDiv.innerHTML = "<h3>Explicações:</h3>";
+    currentQuestions.forEach((q,i) => {
+      explanationsDiv.innerHTML += `<div><strong>${i+1}.</strong> ${q.explanation}</div>`;
+    });
+  }
+
+  function restartQuiz() {
+    // limpar tudo e voltar ao início
+    startSection.style.display = "block";
+    quizSection.style.display = "none";
+    resultSection.style.display = "none";
+    inputName.value = "";
+    selectArea.value = "";
+    timerValue = 60;
+    currentIndex = 0;
+    score = 0;
+    selectedOption = null;
+    progressBar.style.width = "0%";
+  }
+
+  // Salvar progresso localStorage (modo estudo, etc)
+  function saveProgress() {
+    const progress = {
+      userName,
+      currentArea,
+      currentQuestions,
+      currentIndex,
+      score,
+      timerValue,
+      extraTimeUsed,
+      modeEstudo,
+      level,
+      achievements
+    };
+    localStorage.setItem(progressKey, JSON.stringify(progress));
+  }
+
+  // Carregar progresso (não implementado ainda, placeholder)
+  function loadProgress() {
+    const progress = JSON.parse(localStorage.getItem(progressKey) || null);
+    if (!progress) return false;
+    // carregar variáveis do progresso
+    // Implementar depois
+    return true;
+  }
+
+  // Compartilhar resultado (simplificado)
+  shareBtn.onclick = () => {
+    const url = window.location.href;
+    const text = `${userName} fez ${score} pontos no Quiz E.V.A - Área: ${currentArea.toUpperCase()}. Teste você também!`;
+    if (navigator.share) {
+      navigator.share({ title: 'Quiz E.V.A', text, url })
+        .catch(() => alert("Compartilhamento não suportado"));
+    } else {
+      alert(`Compartilhe este texto:\n${text}\n${url}`);
+    }
+  };
+
+  // Exportar resultado em PDF
+  exportPdfBtn.onclick = () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text("Resultado Quiz E.V.A", 20, 20);
+    doc.setFontSize(14);
+    doc.text(`Aluno: ${userName}`, 20, 40);
+    doc.text(`Área: ${currentArea.toUpperCase()}`, 20, 50);
+    doc.text(`Pontuação: ${score} pontos`, 20, 60);
+    doc.text(`Perguntas: ${currentQuestions.length}`, 20, 70);
+    doc.text("Explicações:", 20, 90);
+    let y = 100;
+    currentQuestions.forEach((q,i) => {
+      if(y > 270){
+        doc.addPage();
+        y=20;
+      }
+      doc.text(`${i+1}. ${q.explanation}`, 20, y);
+      y += 10;
+    });
+    doc.save(`resultado_${userName}_${Date.now()}.pdf`);
+  };
+
+  // Eventos
+  startBtn.onclick = startQuiz;
+  confirmBtn.onclick = confirmAnswer;
+  extraTimeBtn.onclick = addExtraTime;
+  restartBtn.onclick = restartQuiz;
+  darkModeToggle.onclick = () => {
+    document.body.classList.toggle("dark-mode");
+    if(document.body.classList.contains("dark-mode")) {
+      darkModeToggle.textContent = "Modo Claro";
+    } else {
+      darkModeToggle.textContent = "Modo Escuro";
+    }
+  };
+  btnBack.onclick = () => {
+    if (quizSection.style.display === "block") {
+      if(confirm("Deseja voltar para a tela inicial? Seu progresso será perdido.")) {
+        restartQuiz();
+      }
+    }
+  };
+  btnHome.onclick = () => {
+    if(confirm("Deseja voltar para a tela inicial? Seu progresso será perdido.")) {
+      restartQuiz();
+    }
+  };
+
+</script>
+</body>
+</html>

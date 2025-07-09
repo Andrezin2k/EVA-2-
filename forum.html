@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fórum de Dúvidas - E.V.A</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+<style>
+  :root {
+    --cor-ciano: #00ffff;
+    --cor-azul-escuro: #003344;
+    --cor-branco: #fff;
+    --bg-light: linear-gradient(270deg, #005bea, #00c9ff);
+    --bg-dark: linear-gradient(270deg, #001522, #003344);
+  }
+  * {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; min-height: 100vh;
+    color: var(--cor-branco);
+    background: var(--bg-light);
+    background-size: 600% 600%;
+    animation: bgAnim 20s ease infinite;
+    overflow-x: hidden;
+  }
+  body.dark-mode {
+    background: var(--bg-dark);
+  }
+  @keyframes bgAnim {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  #particles-js {
+    position: fixed;
+    width: 100%; height: 100%;
+    top: 0; left: 0;
+    z-index: -1;
+  }
+  header {
+    background: rgba(0,30,60,0.8);
+    backdrop-filter: blur(8px);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+  header nav a, header nav button {
+    color: var(--cor-branco);
+    margin-left: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    background: none;
+    border: none;
+    font-size: 1rem;
+  }
+  header nav a:hover, header nav button:hover {
+    text-decoration: underline;
+  }
+  main {
+    max-width: 900px;
+    margin: 100px auto 40px;
+    background: rgba(0,30,60,0.85);
+    padding: 2rem 2.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0,255,255,0.15);
+  }
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  #searchBar {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 25px;
+  }
+  #newTopicBtn {
+    background: var(--cor-ciano);
+    border: none;
+    color: var(--cor-azul-escuro);
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 25px;
+    display: block;
+  }
+  #newTopicBtn:hover {
+    background: #00bcd4;
+    color: white;
+  }
+  #topicsList {
+    list-style: none;
+    padding-left: 0;
+  }
+  .topic-item {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .topic-item:hover {
+    background: rgba(0,255,255,0.2);
+  }
+  .topic-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .topic-meta {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+  #topicView {
+    display: none;
+  }
+  #topicView h3 {
+    margin-top: 0;
+  }
+  #topicView .backBtn {
+    cursor: pointer;
+    color: var(--cor-ciano);
+    margin-bottom: 20px;
+    display: inline-block;
+    font-weight: 600;
+  }
+  #topicView .post-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  #topicView .post-item {
+    background: rgba(255,255,255,0.1);
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    position: relative;
+    animation: fadeIn 0.5s ease;
+  }
+  #topicView .post-author {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  #topicView .post-date {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+  #topicView .post-content {
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+  }
+  #topicView .like-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--cor-ciano);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  #topicView .like-btn.liked {
+    color: #00ffcc;
+  }
+  #topicView form {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+  }
+  #topicView form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  #topicView form input[type=text], #topicView form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    margin-bottom: 15px;
+  }
+  #topicView form textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+  #topicView form button {
+    background: var(--cor-ciano);
+    border: none;
+    color: var(--cor-azul-escuro);
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  #topicView form button:hover {
+    background: #00bcd4;
+    color: white;
+  }
+  #darkModeToggle {
+    background: none;
+    border: 2px solid var(--cor-ciano);
+    color: var(--cor-ciano);
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.3s ease;
+  }
+  #darkModeToggle:hover {
+    background: var(--cor-ciano);
+    color: var(--cor-azul-escuro);
+  }
+  @keyframes fadeIn {
+    from {opacity:0; transform: translateY(10px);}
+    to {opacity:1; transform: translateY(0);}
+  }
+  /* Scrollbar custom */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--cor-ciano);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+<div id="particles-js"></div>
+
+<header>
+  <h1><i class="bi bi-question-circle"></i> E.V.A - Fórum de Dúvidas</h1>
+  <nav>
+    <a href="#" id="btnHome">Início</a>
+    <a href="#" id="btnBack">Voltar</a>
+    <button id="darkModeToggle">Modo Escuro</button>
+  </nav>
+</header>
+
+<main>
+  <!-- Lista de tópicos -->
+  <section id="topicsSection">
+    <h2>Dúvidas Recentes</h2>
+    <input type="text" id="searchBar" placeholder="Buscar dúvidas..." autocomplete="off" />
+    <button id="newTopicBtn">Nova Dúvida</button>
+    <ul id="topicsList"></ul>
+  </section>
+
+  <!-- Visualizar tópico -->
+  <section id="topicView">
+    <span class="backBtn" id="backToTopics"><i class="bi bi-arrow-left"></i> Voltar à lista</span>
+    <h3 id="topicTitle"></h3>
+    <p><strong>Autor:</strong> <span id="topicAuthor"></span> | <strong>Data:</strong> <span id="topicDate"></span></p>
+    <ul class="post-list" id="postsList"></ul>
+
+    <form id="replyForm">
+      <h4>Responder à dúvida</h4>
+      <label for="replyAuthor">Seu nome:</label>
+      <input type="text" id="replyAuthor" placeholder="Seu nome..." required />
+      <label for="replyContent">Mensagem:</label>
+      <textarea id="replyContent" placeholder="Digite sua resposta..." required></textarea>
+      <button type="submit">Enviar resposta</button>
+    </form>
+  </section>
+
+  <!-- Modal Nova dúvida -->
+  <div id="newTopicModal" class="modal" style="display:none;">
+    <div class="modal-content" style="background:#003344; color:#fff; border-radius:12px; padding:25px; max-width:600px; margin:10% auto; position:relative;">
+      <span class="close-btn" id="closeNewTopicModal" style="position:absolute;top:10px;right:15px; font-size:28px; cursor:pointer;">&times;</span>
+      <h3>Nova Dúvida</h3>
+      <form id="newTopicForm">
+        <label for="topicTitleInput">Título:</label>
+        <input type="text" id="topicTitleInput" maxlength="100" required />
+        <label for="topicAuthorInput">Seu nome:</label>
+        <input type="text" id="topicAuthorInput" maxlength="40" required />
+        <label for="topicContentInput">Descrição:</label>
+        <textarea id="topicContentInput" rows="6" maxlength="1000" required></textarea>
+        <button type="submit">Publicar dúvida</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+<script>
+  // Partículas no fundo
+  particlesJS("particles-js", {
+    particles: {
+      number: { value: 80 },
+      color: { value: ["#00ffff", "#0088cc", "#ffffff"] },
+      shape: { type: "circle" },
+      opacity: { value: 0.4 },
+      size: { value: 3 },
+      line_linked: { enable: true, distance: 120, color: "#00ffff", opacity: 0.25, width: 1 },
+      move: { enable: true, speed: 2 }
+    },
+    interactivity: { events: { onhover: { enable: true, mode: "repulse" } } }
+  });
+
+  // Dados do fórum guardados no localStorage
+  const storageKey = "evaForumTopics";
+
+  // Elementos
+  const topicsList = document.getElementById("topicsList");
+  const searchBar = document.getElementById("searchBar");
+  const newTopicBtn = document.getElementById("newTopicBtn");
+  const newTopicModal = document.getElementById("newTopicModal");
+  const closeNewTopicModalBtn = document.getElementById("closeNewTopicModal");
+  const newTopicForm = document.getElementById("newTopicForm");
+  const topicTitleInput = document.getElementById("topicTitleInput");
+  const topicAuthorInput = document.getElementById("topicAuthorInput");
+  const topicContentInput = document.getElementById("topicContentInput");
+
+  const topicView = document.getElementById("topicView");
+  const backToTopicsBtn = document.getElementById("backToTopics");
+  const topicTitle = document.getElementById("topicTitle");
+  const topicAuthor = document.getElementById("topicAuthor");
+  const topicDate = document.getElementById("topicDate");
+  const postsList = document.getElementById("postsList");
+  const replyForm = document.getElementById("replyForm");
+  const replyAuthor = document.getElementById("replyAuthor");
+  const replyContent = document.getElementById("replyContent");
+
+  const btnBack = document.getElementById("btnBack");
+  const btnHome = document.getElementById("btnHome");
+  const darkModeToggle = document.getElementById("darkModeToggle");
+  const topicsSection = document.getElementById("topicsSection");
+
+  // Estado
+  let topics = [];
+  let currentTopicId = null;
+
+  // Funções auxiliares
+  function formatDate(date) {
+    return date.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+  }
+  function saveTopics() {
+    localStorage.setItem(storageKey, JSON.stringify(topics));
+  }
+  function loadTopics() {
+    const data = localStorage.getItem(storageKey);
+    if(data) topics = JSON.parse(data);
+    else topics = [];
+  }
+
+  function renderTopics(filter = "") {
+    topicsList.innerHTML = "";
+    const filtered = topics.filter(t => 
+      t.title.toLowerCase().includes(filter.toLowerCase()) ||
+      t.author.toLowerCase().includes(filter.toLowerCase()) ||
+      t.content.toLowerCase().includes(filter.toLowerCase())
+    );
+    if(filtered.length === 0) {
+      topicsList.innerHTML = "<li style='text-align:center; opacity:0.7; padding:15px;'>Nenhuma dúvida encontrada.</li>";
+      return;
+    }
+    filtered.forEach(topic => {
+      const li = document.createElement("li");
+      li.className = "topic-item";
+      li.dataset.id = topic.id;
+      li.innerHTML = `
+        <div>
+          <div class="topic-title">${topic.title}</div>
+          <div class="topic-meta">Por ${topic.author} | ${formatDate(new Date(topic.createdAt))}</div>
+        </div>
+        <div>
+          <button class="like-btn" title="Curtir dúvida"><i class="bi bi-hand-thumbs-up"></i> <span>${topic.likes}</span></button>
+        </div>
+      `;
+      li.querySelector(".like-btn").onclick = (e) => {
+        e.stopPropagation();
+        topic.likes++;
+        saveTopics();
+        renderTopics(searchBar.value);
+      };
+      li.onclick = () => openTopic(topic.id);
+      topicsList.appendChild(li);
+    });
+  }
+
+  function openTopic(id) {
+    currentTopicId = id;
+    const topic = topics.find(t => t.id === id);
+    if(!topic) return;
+
+    topicsSection.style.display = "none";
+    topicView.style.display = "block";
+
+    topicTitle.textContent = topic.title;
+    topicAuthor.textContent = topic.author;
+    topicDate.textContent = formatDate(new Date(topic.createdAt));
+
+    renderPosts(topic.posts || []);
+  }
+
+  function renderPosts(posts) {
+    postsList.innerHTML = "";
+    if(posts.length === 0) {
+      postsList.innerHTML = "<li style='text-align:center; opacity:0.7;'>Sem respostas ainda. Seja o primeiro a responder!</li>";
+      return;
+    }
+    posts.forEach((post, i) => {
+      const li = document.createElement("li");
+      li.className = "post-item";
+      li.innerHTML = `
+        <div class="post-author">${post.author}</div>
+        <div class="post-date">${formatDate(new Date(post.createdAt))}</div>
+        <div class="post-content">${escapeHtml(post.content)}</div>
+        <button class="like-btn ${post.liked ? "liked" : ""}" title="Curtir resposta"><i class="bi bi-hand-thumbs-up"></i> <span>${post.likes}</span></button>
+      `;
+      const likeBtn = li.querySelector(".like-btn");
+      likeBtn.onclick = () => {
+        if(!post.liked){
+          post.likes++;
+          post.liked = true;
+        } else {
+          post.likes--;
+          post.liked = false;
+        }
+        saveTopics();
+        renderPosts(posts);
+      };
+      postsList.appendChild(li);
+    });
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Abrir modal nova dúvida
+  newTopicBtn.onclick = () => {
+    newTopicModal.style.display = "block";
+  };
+  closeNewTopicModalBtn.onclick = () => {
+    newTopicModal.style.display = "none";
+    newTopicForm.reset();
+  };
+  window.onclick = e => {
+    if(e.target === newTopicModal) {
+      newTopicModal.style.display = "none";
+      newTopicForm.reset();
+    }
+  };
+
+  // Submeter nova dúvida
+  newTopicForm.onsubmit = e => {
+    e.preventDefault();
+    const title = topicTitleInput.value.trim();
+    const author = topicAuthorInput.value.trim();
+    const content = topicContentInput.value.trim();
+    if(!title || !author || !content) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+    const newTopic = {
+      id: Date.now().toString(),
+      title,
+      author,
+      content,
+      createdAt: new Date().toISOString(),
+      likes: 0,
+      posts: []
+    };
+    topics.unshift(newTopic);
+    saveTopics();
+    renderTopics(searchBar.value);
+    newTopicModal.style.display = "none";
+    newTopicForm.reset();
+  };
+
+  // Voltar à lista
+  backToTopicsBtn.onclick = () => {
+    topicView.style.display = "none";
+    topicsSection.style.display = "block";
+    currentTopicId = null;
+  };
+  btnBack.onclick = () => {
+    if(topicView.style.display === "block") {
+      backToTopicsBtn.click();
+    }
+  };
+  btnHome.onclick = () => {
+    if(topicView.style.display === "block") {
+      backToTopicsBtn.click();
+    }
+    // Se quiser adicionar home mais geral futuramente, pode expandir aqui
+  };
+
+  // Responder tópico
+  replyForm.onsubmit = e => {
+    e.preventDefault();
+    if(!currentTopicId) return;
+    const author = replyAuthor.value.trim();
+    const content = replyContent.value.trim();
+    if(!author || !content) {
+      alert("Preencha seu nome e a mensagem.");
+      return;
+    }
+    const topic = topics.find(t => t.id === currentTopicId);
+    if(!topic) return;
+
+    const newPost = {
+      id: Date.now().toString(),
+      author,
+      content,
+      createdAt: new Date().toISOString(),
+      likes: 0,
+      liked: false
+    };
+    topic.posts.push(newPost);
+    saveTopics();
+    renderPosts(topic.posts);
+    replyForm.reset();
+  };
+
+  // Busca
+  searchBar.oninput = e => {
+    renderTopics(e.target.value);
+  };
+
+  // Modo escuro toggle
+  darkModeToggle.onclick = () => {
+    document.body.classList.toggle("dark-mode");
+    if(document.body.classList.contains("dark-mode")) {
+      darkModeToggle.textContent = "Modo Claro";
+    } else {
+      darkModeToggle.textContent = "Modo Escuro";
+    }
+  };
+
+  // Inicialização
+  loadTopics();
+  renderTopics();
+
+</script>
+
+</body>
+</html>
