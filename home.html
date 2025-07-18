@@ -21,10 +21,18 @@
       scroll-behavior: smooth;
     }
 
-    body {
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+    }
+
+    .container-flex {
+      display: flex;
+      flex-direction: column;
       min-height: 100vh;
+    }
+
+    body {
       color: var(--text-color);
       background: linear-gradient(270deg, #0b80a3, #60aaff, #6a9faf);
       background-size: 600% 600%;
@@ -203,55 +211,57 @@
 
 <body>
   <div id="particles-js"></div>
-
   <audio id="clickSound" src="click.mp3"></audio>
   <audio id="ambientSound" src="ambiente.mp3" loop></audio>
 
-  <header>
-    <div class="d-flex align-items-center icon-click">
-      <i class="bi bi-house-door fs-3 me-2"></i>
-      <span class="fs-5">E.V.A</span>
-    </div>
-    <nav class="nav-links">
-      <a href="perfil.html" class="icon-click">
-        <i class="bi bi-person-circle me-1"></i>Perfil
-      </a>
-      <a href="logout.html" class="icon-click">
-        <i class="bi bi-box-arrow-right me-1"></i>Logout
-      </a>
-      <a href="termos.html" class="icon-click">
-        <i class="bi bi-file-earmark-text me-1"></i>Termos
-      </a>
-    </nav>
-  </header>
+  <div class="container-flex">
+    <header>
+      <div class="d-flex align-items-center icon-click">
+        <i class="bi bi-house-door fs-3 me-2"></i>
+        <span class="fs-5">E.V.A</span>
+      </div>
+      <nav class="nav-links">
+        <a href="perfil.html" class="icon-click">
+          <i class="bi bi-person-circle me-1"></i>Perfil
+        </a>
+        <a href="logout.html" class="icon-click">
+          <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </a>
+        <a href="termos.html" class="icon-click">
+          <i class="bi bi-file-earmark-text me-1"></i>Termos
+        </a>
+      </nav>
+    </header>
 
-  <main>
-    <h2>Bem-vindo(a) Professor(a)</h2>
-    <h1>Escolha uma Opção</h1>
+    <main>
+      <h2>Bem-vindo(a) Professor(a)</h2>
+      <h1>Escolha uma Opção</h1>
 
-    <button onclick="playClick(); location.href='per.html';" class="btn btn-large">
-      <i class="bi bi-journal-text me-2 fs-4"></i>PER
-    </button>
+      <button onclick="playClick(); location.href='per.html';" class="btn btn-large">
+        <i class="bi bi-journal-text me-2 fs-4"></i>PER
+      </button>
 
-    <button onclick="playClick(); location.href='situacoes.html';" class="btn btn-large">
-      <i class="bi bi-calendar-event me-2 fs-4"></i>Situações de Aprendizagem
-    </button>
+      <button onclick="playClick(); location.href='situacoes.html';" class="btn btn-large">
+        <i class="bi bi-calendar-event me-2 fs-4"></i>Situações de Aprendizagem
+      </button>
 
-    <button onclick="playClick(); location.href='avaliacoes.html';" class="btn btn-large">
-      <i class="bi bi-file-earmark-text me-2 fs-4"></i>Avaliações
-    </button>
+      <button onclick="playClick(); location.href='avaliacoes.html';" class="btn btn-large">
+        <i class="bi bi-file-earmark-text me-2 fs-4"></i>Avaliações
+      </button>
 
-    <button onclick="playClick(); location.href='relatorios.html';" class="btn btn-large">
-      <i class="bi bi-clipboard-data me-2 fs-4"></i>Relatórios
-    </button>
+      <button onclick="playClick(); location.href='relatorios.html';" class="btn btn-large">
+        <i class="bi bi-clipboard-data me-2 fs-4"></i>Relatórios
+      </button>
 
-    <button onclick="playClick(); location.href='cronograma.html';" class="btn btn-large">
-      <i class="bi bi-clock me-2 fs-4"></i>Cronogramas
-    </button>
+      <button onclick="playClick(); location.href='cronograma.html';" class="btn btn-large">
+        <i class="bi bi-clock me-2 fs-4"></i>Cronogramas
+      </button>
     </main>
-  <footer class="footer">
-    &copy; 2025 Plataforma E.V.A. Todos os direitos reservados.
-  </footer>
+
+    <footer class="footer">
+      &copy; 2025 Plataforma E.V.A. Todos os direitos reservados.
+    </footer>
+  </div>
 
   <div class="modal-welcome" id="welcomeModal">
     <span class="close-modal" onclick="closeModal()">&times;</span>
