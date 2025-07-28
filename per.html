@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PER - Portal do Professor</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
   <style>
     :root {
@@ -30,12 +30,9 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      transition: background 0.5s, color 0.5s;
-    }
-
-    body {
       background: var(--bg);
       color: var(--text);
+      transition: background 0.5s, color 0.5s;
     }
 
     .dark-mode {
@@ -90,7 +87,7 @@
     }
 
     main {
-      flex: 1;
+      flex-grow: 1;
       max-width: 700px;
       width: 100%;
       border-radius: 12px;
@@ -190,7 +187,6 @@
       font-size: 0.85rem;
       transition: background 0.3s;
       animation: slideUp 0.7s ease;
-      margin-top: auto;
     }
 
     footer:hover {
@@ -201,10 +197,8 @@
       from { transform: translateY(100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
   </style>
 </head>
-
 <body>
 
 <div id="particles-js"></div>
@@ -269,139 +263,4 @@
     particles: {
       number: { value: 80 },
       color: { value: "#ffffff" },
-      shape: { type: "circle" },
-      opacity: { value: 0.5 },
-      size: { value: 3 },
-      move: { enable: true, speed: 2 }
-    },
-    interactivity: {
-      events: { onhover: { enable: true, mode: "repulse" } },
-      modes: { repulse: { distance: 100 } }
-    }
-  });
-
-  const uploadForm = document.getElementById('uploadForm');
-  const fileList = document.getElementById('fileList');
-  const totalArquivos = document.getElementById('totalArquivos');
-  const searchInput = document.getElementById('searchInput');
-  const noFilesMsg = document.getElementById('noFilesMsg');
-  const toastMsg = document.getElementById('toastMsg');
-  const categoriaSelect = document.getElementById('categoriaSelect');
-
-  let arquivos = JSON.parse(localStorage.getItem('perArquivos')) || [];
-
-  function showToast(msg) {
-    toastMsg.textContent = msg;
-    toastMsg.style.display = 'block';
-    setTimeout(() => toastMsg.style.display = 'none', 3000);
-  }
-
-  function renderArquivos(filtro = '') {
-    fileList.innerHTML = '';
-    const categoriaAtual = categoriaSelect.value;
-
-    const arquivosFiltrados = arquivos.filter(file =>
-      file.categoria === categoriaAtual &&
-      file.nome.toLowerCase().includes(filtro.toLowerCase())
-    );
-
-    noFilesMsg.style.display = arquivosFiltrados.length ? 'none' : 'block';
-
-    arquivosFiltrados.forEach((file, index) => {
-      const div = document.createElement('div');
-      div.className = 'file-item';
-      div.innerHTML = `
-        <div>
-          <i class="bi bi-file-earmark-text me-2"></i>${file.nome}
-          <small class="text-muted d-block">${file.data} - ${file.categoria}</small>
-        </div>
-        <div class="btn-group">
-          <button class="btn btn-sm btn-outline-primary" onclick="baixarArquivo('${file.nome}')">
-            <i class="bi bi-download"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" onclick="removerArquivo(${index})">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-      `;
-      fileList.appendChild(div);
-    });
-
-    const total = arquivos.filter(file => file.categoria === categoriaAtual).length;
-    totalArquivos.textContent = total;
-  }
-
-  uploadForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const arquivoInput = document.getElementById('arquivo');
-    const arquivo = arquivoInput.files[0];
-    if (!arquivo) return alert('Selecione um arquivo!');
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const conteudo = event.target.result;
-      const data = new Date().toLocaleString();
-      const categoria = categoriaSelect.value;
-
-      arquivos.push({ nome: arquivo.name, data, categoria, conteudo });
-      localStorage.setItem('perArquivos', JSON.stringify(arquivos));
-
-      renderArquivos(searchInput.value);
-      showToast('Arquivo salvo!');
-      uploadForm.reset();
-    };
-    reader.readAsDataURL(arquivo);
-  });
-
-  function removerArquivo(index) {
-    if (confirm('Deseja realmente remover este arquivo?')) {
-      arquivos.splice(index, 1);
-      localStorage.setItem('perArquivos', JSON.stringify(arquivos));
-      renderArquivos(searchInput.value);
-      showToast('Arquivo removido!');
-    }
-  }
-
-  function limparTudo() {
-    if (confirm('Deseja realmente apagar TODOS os arquivos?')) {
-      arquivos = [];
-      localStorage.setItem('perArquivos', JSON.stringify([]));
-      renderArquivos(searchInput.value);
-      showToast('Todos os arquivos foram apagados!');
-    }
-  }
-
-  function baixarArquivo(nome) {
-    const file = arquivos.find(arq => arq.nome === nome);
-    if (!file || !file.conteudo) {
-      showToast('Arquivo não encontrado.');
-      return;
-    }
-
-    const link = document.createElement('a');
-    link.href = file.conteudo;
-    link.download = file.nome;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    showToast(`Download iniciado: ${file.nome}`);
-  }
-
-  searchInput.addEventListener('input', function() {
-    renderArquivos(this.value);
-  });
-
-  categoriaSelect.addEventListener('change', function() {
-    renderArquivos(searchInput.value);
-  });
-
-  document.getElementById('toggleDark').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-  });
-
-  renderArquivos();
-</script>
-
-</body>
-</html>
+      shape: { type: "
